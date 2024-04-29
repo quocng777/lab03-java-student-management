@@ -1,34 +1,30 @@
 package com.quocnguyen.studentmanagement.entities;
 
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
-@Table(name = "students")
 @Entity
+@Table(name = "courses")
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@AllArgsConstructor
-public class StudentEntity {
+public class CourseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private Date birthday;
+    @Column
+    private String lecture;
 
-    @Column(length = 255)
-    private String address;
+    private int year;
     private String notes;
 
 
