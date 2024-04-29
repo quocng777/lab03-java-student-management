@@ -1,5 +1,6 @@
 package com.quocnguyen.studentmanagement.rest_controllers;
 
+import com.quocnguyen.studentmanagement.dto.StudentDTO;
 import com.quocnguyen.studentmanagement.entities.Student;
 import com.quocnguyen.studentmanagement.services.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 public class StudentRESTController {
     private final StudentService service;
     @GetMapping("/api/students")
-    public ResponseEntity<List<Student>> getStudents(
+    public ResponseEntity<List<StudentDTO>> getStudents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
@@ -23,7 +24,7 @@ public class StudentRESTController {
 
 
 
-        List<Student> students = service.getStudents(page, sortBy, sortDir);
+        List<StudentDTO> students = service.getStudents(page, sortBy, sortDir);
 
         return ResponseEntity.ok(students);
     }
