@@ -1,21 +1,22 @@
 package com.quocnguyen.studentmanagement.entities;
 
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-@Table(name = "students")
+@Table(name = "student")
 @Entity
 @Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class StudentEntity {
+public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +31,9 @@ public class StudentEntity {
     @Column(length = 255)
     private String address;
     private String notes;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "students")
+    Set<Course> courses = new HashSet<>();
 
 
 }
