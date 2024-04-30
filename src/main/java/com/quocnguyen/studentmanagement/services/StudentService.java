@@ -2,6 +2,7 @@ package com.quocnguyen.studentmanagement.services;
 
 import com.quocnguyen.studentmanagement.entities.Student;
 import com.quocnguyen.studentmanagement.entities.StudentDTO;
+import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +29,8 @@ public class StudentService {
 
     public StudentDTO getStudentById(int id) {
 
-        final Student student = repository.findById(id).orElseThrow(null);
-
+        final Student student = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        log.debug(student.toString());
         return  new StudentDTO(student);
     }
 

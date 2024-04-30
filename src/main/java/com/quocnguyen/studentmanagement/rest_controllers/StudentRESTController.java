@@ -4,6 +4,7 @@ import com.quocnguyen.studentmanagement.entities.CollectionResponse;
 import com.quocnguyen.studentmanagement.entities.DataResponse;
 import com.quocnguyen.studentmanagement.entities.StudentDTO;
 import com.quocnguyen.studentmanagement.entities.Student;
+import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.services.StudentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,15 +55,15 @@ public class StudentRESTController {
     @GetMapping("{id}")
     public ResponseEntity<DataResponse<StudentDTO>> getStudentById(@PathVariable(name = "id") String id) {
 
-        int studentId = 0; //TODO: need to adjust after adding exception handler
+        int studentId; //TODO: need to adjust after adding exception handler
+        StudentDTO student;
         try {
             studentId = Integer.parseInt(id);
-        } catch(NumberFormatException e) {
-            // TODO: do something stuff here
+            // call to the service
+            student = service.getStudentById(studentId);
+        } catch(NumberFormatException | ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(String.format("Student with id \"%s\" not found", id));
         }
-
-        // call to the service
-        StudentDTO student = service.getStudentById(studentId);
 
         return ResponseEntity.ok(new DataResponse<>(student));
     }
