@@ -70,4 +70,11 @@ public class StudentService {
         return student;
     }
 
+    @Transactional
+    public void delete(int id) {
+        Student storedStudent = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        repository.delete(storedStudent);
+    }
+
 }

@@ -115,6 +115,25 @@ public class StudentRESTController {
 
         return ResponseEntity.ok(new DataResponse<>(student));
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteStudentById(@PathVariable(name = "id") String id) {
+
+        int studentId;
+        try {
+            studentId = Integer.parseInt(id);
+
+            //call to service to perform transaction
+            service.delete(studentId);
+
+        } catch (NumberFormatException | ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(String.format("Student with id \"%s\" not found", id));
+        }
+
+        return ResponseEntity.ok("Deleted successfully");
+    }
 }
+
+
 
 
