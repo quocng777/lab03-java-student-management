@@ -1,5 +1,6 @@
 package com.quocnguyen.studentmanagement.services;
 
+import com.quocnguyen.studentmanagement.entities.Student;
 import com.quocnguyen.studentmanagement.entities.StudentDTO;
 import com.quocnguyen.studentmanagement.repositories.StudentRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,13 @@ public class StudentService {
         return repository
                 .findAll(pageable)
                 .map(StudentDTO::new);
+    }
+
+    public StudentDTO getStudentById(int id) {
+
+        final Student student = repository.findById(id).orElseThrow(null);
+
+        return  new StudentDTO(student);
     }
 
 }
