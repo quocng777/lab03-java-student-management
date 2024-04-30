@@ -2,6 +2,7 @@ package com.quocnguyen.studentmanagement.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -16,15 +17,15 @@ import java.util.Date;
 public class StudentDTO {
     private Integer id;
 
-    @NotNull
-    @Size(max = 50, message = "Name must not be longer than 50 characters")
+    @NotBlank
+    @Size(min = 2, max = 50, message = "Name must not be longer than 50 characters")
     private String name;
 
     @NotNull
     private Date birthday;
 
-    @NotNull
-    @Size(max = 512, message = "Address must not be longer than 512 characters")
+    @NotBlank
+    @Size(min = 1, max = 512, message = "Address must not be longer than 512 characters")
     private String address;
 
     private String notes;

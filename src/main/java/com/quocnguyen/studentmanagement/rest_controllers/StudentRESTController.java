@@ -17,6 +17,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.function.EntityResponse;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -77,7 +78,7 @@ public class StudentRESTController {
     }
 
     @PostMapping
-    public ResponseEntity<DataResponse<StudentDTO>> createNewStudent(@Valid @RequestBody StudentDTO student) {
+    public ResponseEntity<DataResponse<StudentDTO>> createNewStudent(@RequestBody @Valid StudentDTO student) {
 
         //logging
         log.debug(student.toString());
@@ -87,7 +88,8 @@ public class StudentRESTController {
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequestUri()
-                .build()
+                .path("/{id}")
+                .buildAndExpand(savedStudent.getId())
                 .toUri();
 
         log.debug(uri.toString());

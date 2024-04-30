@@ -19,5 +19,12 @@ public class ErrorResponse {
         this.timestamp = System.currentTimeMillis();
     }
 
+    public ErrorResponse(HttpStatus httpStatus, String message, long timestamp) {
+        this.statusCode = httpStatus.value();
+        this.errorCode = httpStatus.name();
+        this.message = message;
+        this.timestamp = timestamp;
+    }
+
 
 }
