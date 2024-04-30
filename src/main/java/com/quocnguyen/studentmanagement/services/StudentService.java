@@ -4,6 +4,7 @@ import com.quocnguyen.studentmanagement.entities.Student;
 import com.quocnguyen.studentmanagement.entities.StudentDTO;
 import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.repositories.StudentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,24 @@ public class StudentService {
         final Student student = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
         log.debug(student.toString());
         return  new StudentDTO(student);
+    }
+
+    @Transactional
+    public StudentDTO create(StudentDTO student) {
+
+        Student entity = Student
+                .builder()
+                .name(student.getName())
+                .birthday(student.getBirthday())
+                .address(student.getAddress())
+                .name(student.getName())
+                .build();
+
+        repository.save(entity);
+        //logging
+        log.debug(entity.getId().toString());
+
+        return new StudentDTO(entity);
     }
 
 }
