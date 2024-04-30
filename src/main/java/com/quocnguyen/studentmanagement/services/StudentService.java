@@ -53,4 +53,21 @@ public class StudentService {
         return new StudentDTO(entity);
     }
 
+    @Transactional
+    public StudentDTO update(int id, StudentDTO student) {
+
+        Student storedStudent = repository
+                .findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        storedStudent.setName(student.getName());
+        storedStudent.setBirthday(student.getBirthday());
+        storedStudent.setNotes(student.getNotes());
+        storedStudent.setAddress(student.getAddress());
+
+        repository.save(storedStudent);
+
+        return student;
+    }
+
 }

@@ -7,6 +7,7 @@ import com.quocnguyen.studentmanagement.entities.Student;
 import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.services.StudentService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -81,9 +82,8 @@ public class StudentRESTController {
     public ResponseEntity<DataResponse<StudentDTO>> createNewStudent(@RequestBody @Valid StudentDTO student) {
 
         //logging
-        log.debug(student.toString());
+//        log.debug(student.toString());
 
-        //TODO: call service to handle transaction
         final StudentDTO savedStudent =  service.create(student);
 
         URI uri = ServletUriComponentsBuilder
@@ -92,9 +92,28 @@ public class StudentRESTController {
                 .buildAndExpand(savedStudent.getId())
                 .toUri();
 
-        log.debug(uri.toString());
+//        log.debug(uri.toString());
 
         return ResponseEntity.created(uri).body(new DataResponse<>(savedStudent));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<DataResponse<StudentDTO>> updateStudent(
+            @PathVariable(name = "id") String id ,
+            @RequestBody @Valid StudentDTO student) {
+
+        int studentId;
+        try {
+            studentId = Integer.parseInt(id);
+
+            //call to service to perform transaction
+            service.update(studentId, student);
+
+        } catch (NumberFormatException | ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(String.format("Student with id \"%s\" not found", student.getId()));
+        }
+
+        return ResponseEntity.ok(new DataResponse<>(student));
     }
 }
 
