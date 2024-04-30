@@ -17,14 +17,10 @@ import org.springframework.stereotype.Service;
 public class StudentService {
     private final StudentRepository repository;
 
-    public Page<StudentDTO> getStudents(Pageable pageable) {
+    public Page<StudentDTO> getStudents(Pageable pageable, String keyword) {
 
-        var result = repository.findAll(pageable);
-//        log.debug(result.getPageable().toString());
-//        log.debug(result.getSort().toString());
-        System.out.println(result.getSort());
         return repository
-                .findAll(pageable)
+                .findByNameContainingIgnoreCase(keyword, pageable)
                 .map(StudentDTO::new);
     }
 

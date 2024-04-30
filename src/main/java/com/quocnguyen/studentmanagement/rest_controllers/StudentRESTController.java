@@ -39,7 +39,11 @@ public class StudentRESTController {
     public ResponseEntity<CollectionResponse<StudentDTO>> getStudents(
             @RequestParam(defaultValue = "0") String page,
             @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "asc") String sortDir) {
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam String keyword
+    ) {
+
+        log.debug(keyword);
 
         int pageNo;
         try {
@@ -55,7 +59,7 @@ public class StudentRESTController {
         Sort sort = sortDir.equals("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(pageNo, NUMBER_STUDENT_PER_PAGE, sort);
 
-        Page<StudentDTO> paging = service.getStudents(pageable);
+        Page<StudentDTO> paging = service.getStudents(pageable, keyword);
 
         CollectionResponse<StudentDTO> response = new CollectionResponse<>(paging);
 
