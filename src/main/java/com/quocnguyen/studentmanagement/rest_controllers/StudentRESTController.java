@@ -14,25 +14,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.server.ExposesResourceFor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.function.EntityResponse;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
 
 @RestController
-@ExposesResourceFor(Student.class)
 @RequestMapping("/api/students")
 @RequiredArgsConstructor
 @Slf4j
 public class StudentRESTController {
-    private static final int NUMBER_STUDENT_PER_PAGE = 12;
+    private static final int NUMBER_STUDENT_PER_PAGE = 15;
 
     private final StudentService service;
     @GetMapping
@@ -40,7 +34,7 @@ public class StudentRESTController {
             @RequestParam(defaultValue = "0") String page,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir,
-            @RequestParam String keyword
+            @RequestParam(defaultValue = "") String keyword
     ) {
 
         log.debug(keyword);

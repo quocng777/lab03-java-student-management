@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.RepresentationModel;
 
 import java.util.Date;
 

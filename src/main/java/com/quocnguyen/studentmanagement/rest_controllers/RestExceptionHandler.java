@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quocnguyen.studentmanagement.entities.ErrorResponse;
 import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Order(-1)
 public class RestExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)

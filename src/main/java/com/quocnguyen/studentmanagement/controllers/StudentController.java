@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
-@AllArgsConstructor
 public class StudentController {
-    private final StudentService service;
+    @GetMapping("/abc")
+    public String getIndexPage() {
+        return "students";
+    }
 
 }

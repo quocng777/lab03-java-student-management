@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="max-w-[1024px]  mx-auto relative text-gray-700">
+<header class="sticky top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-6 bg-teal-600 text-white lg:px-12 rounded-b-md">
+    <a href="/">Student Management System</a>
+    <nav class="flex gap-6">
+        <a class="px-2 py-1 rounded-md hover:bg-gray-500/75 transition-colors" href="#">
+            Student
+        </a>
+        <a class="px-2 py-1 rounded-md hover:bg-gray-500/75 transition-colors" href="#">
+            Course
+        </a>
+    </nav>
+</header>
+<main class="width mt-6 px-4">
+    <h1 class="font-bold text-3xl">
+        Students
+    </h1>
+
+    <form class="search-form relative max-w-[260px] mt-4 inline-flex items-center mr-8">
+        <input class="bg-slate-50 py-2 rounded-3xl flex-1 pl-4 pr-10
+             focus:shadow-lg focus:outline-none transition-shadow" placeholder="Search">
+        <button class="absolute right-4">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+    </form>
+
+    <button class="py-2 px-4 rounded-xl font-medium bg-teal-600 text-white hover:bg-teal-500 transiton-all duration-300 add-student">Add New Student</button>
+
+    <div class="mt-10">
+        <p class="num-students"></p>
+        <table class="table-fixed max-w-[800px] mx-auto bg-slate-50 rounded-lg mt-4 overflow-hidden mb-6 min-w-[600px]">
+            <thead>
+            <tr class="bg-gray-200">
+                <th scope="row" class="py-2 font-medium">ID</th>
+                <th scope="row" class="py-2 font-medium">Name</th>
+                <th scope="row" class="py-2 font-medium">Birthday</th>
+                <th scope="row" class="py-2 font-medium">Address</th>
+                <th scope="row" class="py-2 font-medium">Note</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination flex gap-2 mx-auto w-fit">
+
+    </div>
+</main>
+
+<div class="create-student hidden">
+    <div class="bg-black/40 fixed top-0 right-0 left-0 bottom-0"></div>
+    <div class="bg-slate-50 w-fit rounded-xl fixed bottom-[50%] right-[50%] translate-x-1/2 translate-y-1/2 px-6 py-4">
+        <h3 class="text-lg font-medium mb-8">Create new Student</h3>
+
+        <button class="close-create-form absolute right-4 top-4">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <form>
+            <div class="flex items-center justify-between w-[320px]">
+                <label>Name</label>
+                <input class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter name" required/>
+            </div>
+            <div class="flex items-center justify-between w-[320px] mt-4">
+                <label>Birthday</label>
+                <input type="date" class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter name" required/>
+            </div>
+            <div class="flex items-center justify-between w-[320px] mt-4">
+                <label>Address</label>
+                <input class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter name" required/>
+            </div>
+            <div class="flex items-center justify-between w-[320px] mt-4">
+                <label>Note</label>
+                <textarea class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter notes" rows="3"></textarea>
+            </div>
+
+            <button class="bg-teal-600 text-white px-4 py-2 rounded-xl mt-6 mx-auto w-full">
+                Save
+            </button>
+        </form>
+    </div>
+</div>
+</body>
+<script>
+    var selected = 0;
+    var numOfPages = 0;
+    var keyword = "";
+    const handleClickStudentRow = (e) => {
+        console.log(e.currentTarget)
+        const id = e.currentTarget.dataset.userid;
+        window.location.href="/student/" + id;
+    };
+
+    const handleClickPageBtn = async (e) => {
+        const page = e.currentTarget.dataset.page;
+
+        await  loadData(page, keyword);
+    }
+
+
+    const loadData = async (pageNum, keyword) => {
+        const res = await fetch(`${host}/api/students?page=${pageNum}&keyword=${keyword}`);
+        const data = (await res.json());
+        console.log(data)
+        const students = data.data;
+        const page = data.page;
+
+        selected = pageNum;
+
+        document.querySelector(".num-students").innerHTML = students && students.length > 0 ? `This table is showing ${page.number} / ${page.totalElements} students`
+            : "No student founded in database";
+
+        const table = document.querySelector("tbody");
+        table.innerHTML = students.map((student) =>
+            `<tr
+                class="even:bg-gray-100 hover:bg-teal-200/75 hover:cursor-pointer transition-colors duration-300"
+                data-userid="${student.id}"
+                onclick="handleClickStudentRow(event)"
+             >
+                <td class="w-1/12 text-center">${student.id}</td>
+                <td class="w-3/12 text-center">${student.name}</td>
+                <td class="w-2/12 text-center">${new Date(student.birthday).toLocaleDateString("vi-VN")}</td>
+                <td class="w-3/12 text-center">${student.address}</td>
+                <td class="w-4/12">${student.notes || ""}</td>
+            </tr>`
+        ).join("\n");
+
+        if(page && page.totalPages > 1) {
+            const pageBtn = [];
+            for(let i = 1; i < page.totalPages; i++) {
+                pageBtn.push(
+                    `
+                         <button class="page-btn size-8 bg-slate-100 rounded-full text-center align-middle border border-gray-400 ${page.page === i ? "bg-teal-200/75 border-teal-600" : ""} hover:scale-105 transition-transform"
+                         data-page="${i}" onclick="handleClickPageBtn(event)">
+                            ${i}
+                         </button>
+                    `
+                )
+            }
+            document.querySelector(".pagination")
+                .innerHTML = `
+                <button class="${page.page - 1 > 0 ? "" : "disabled" } page-btn size-8 bg-slate-100 rounded-full text-center align-middle border border-gray-400  hover:scale-105 transition-transform" data-page="${page.page - 1}" onclick="handleClickPageBtn(event)">
+                    <i class="fa-solid fa-arrow-left" ></i>
+
+                </button>
+                ${pageBtn.join('\n')}
+                <button class="${page.page + 1 < page.totalPages ? "" : "disabled" } page-btn size-8 bg-slate-100 rounded-full text-center align-middle border border-gray-400 hover:scale-105 transition-transform" data-page="${page.page + 1 }" onclick="handleClickPageBtn(event)">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                `
+        } else {
+            document.querySelector(".pagination").innerHTML = "";
+        }
+    }
+</script>
+
+<script>
+    const host = "http://localhost:8080";
+    document.addEventListener('DOMContentLoaded', async (e) => {
+        await loadData(1, "");
+
+        document.querySelector(".search-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+            keyword = e.currentTarget.querySelector("input").value;
+            loadData(0, keyword);
+        })
+
+        document.querySelector(".close-create-form").addEventListener('click', (e) => {
+            document.querySelector(".create-student").classList.add("hidden");
+        })
+
+        document.querySelector(".add-student").addEventListener("click", (e) => {
+            document.querySelector(".create-student").classList.remove("hidden")
+        })
+    });
+</script>
+</html>
