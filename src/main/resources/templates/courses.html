@@ -71,12 +71,12 @@
                 <input class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter name" required/>
             </div>
             <div class="flex items-center justify-between w-[320px] mt-4">
-                <label for="birthday">Birthday</label>
-                <input type="date" class="py-1 px-2 rounded-lg w-[220px]" id="birthday" name="name"required/>
+                <label for="lecture">Lecture</label>
+                <input class="py-1 px-2 rounded-lg w-[220px]" id="lecture" name="lecture" placeholder="Enter lecture" required/>
             </div>
             <div class="flex items-center justify-between w-[320px] mt-4">
-                <label for="address">Address</label>
-                <input class="py-1 px-2 rounded-lg w-[220px]" id="address" name="name" placeholder="Enter name" required/>
+                <label for="year">Year</label>
+                <input type="number" min="1990" max="2100" step="1" class="py-1 px-2 rounded-lg w-[220px]" id="year" name="year" placeholder="Enter year" required/>
             </div>
             <div class="flex items-center justify-between w-[320px] mt-4">
                 <label for="notes">Note</label>
@@ -184,18 +184,18 @@
     const handleSubmitCreateForm = async (e) => {
         e.preventDefault();
         const name = document.querySelector("#name");
-        const birthday = document.querySelector("#birthday");
-        const address = document.querySelector("#address");
+        const lecture = document.querySelector("#lecture");
+        const year = document.querySelector("#year");
         const notes = document.querySelector("#notes");
 
         const body = JSON.stringify({
             name: name.value,
-            birthday: birthday.value,
-            address: address.value,
+            lecture: lecture.value,
+            year: year.value,
             notes: notes.value,
         });
 
-        const response = await fetch("/api/students", {
+        const response = await fetch("/api/courses", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -205,12 +205,13 @@
 
         const data = await response.json();
 
-        alert(`Create student successfully with id ${data.data?.id}`);
+        alert(`Create course successfully with id ${data.data?.id}`);
         name.value = "";
-        birthday.value = "";
-        address.value = "";
+        lecture.value = "";
+        year.value = "";
         notes.value = "";
         document.querySelector(".create-student").classList.add("hidden");
+        window.location.href = `/courses/${data.data?.id}`;
     }
 </script>
 

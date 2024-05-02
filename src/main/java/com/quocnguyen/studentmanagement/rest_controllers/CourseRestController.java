@@ -3,7 +3,9 @@ package com.quocnguyen.studentmanagement.rest_controllers;
 
 import com.quocnguyen.studentmanagement.entities.CollectionResponse;
 import com.quocnguyen.studentmanagement.entities.CourseDTO;
+import com.quocnguyen.studentmanagement.entities.DataResponse;
 import com.quocnguyen.studentmanagement.services.CourseService;
+import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,10 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -45,6 +47,20 @@ public class CourseRestController {
 
         return ResponseEntity.ok(new CollectionResponse<>(courses));
 
+    }
+
+    @PostMapping
+    public ResponseEntity<DataResponse<CourseDTO>> createNewCourse(@RequestBody @Valid CourseDTO course) {
+
+        CourseDTO savedCourse = service.create(course);
+
+        URI uri = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("{id}")
+                .buildAndExpand(savedCourse.getId())
+                .toUri();
+
+        return ResponseEntity.created(uri).body(new DataResponse<>(savedCourse));
     }
 
 
