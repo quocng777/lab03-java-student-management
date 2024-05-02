@@ -19,6 +19,11 @@ public class StudentService {
 
     public Page<StudentDTO> getStudents(Pageable pageable, String keyword) {
 
+        if(keyword.matches("^[1-9][0-9]*$")) {
+            return  repository.findAllByIdEquals(Integer.parseInt(keyword), pageable)
+                    .map(StudentDTO::new);
+        }
+
         return repository
                 .findByNameContainingIgnoreCase(keyword, pageable)
                 .map(StudentDTO::new);

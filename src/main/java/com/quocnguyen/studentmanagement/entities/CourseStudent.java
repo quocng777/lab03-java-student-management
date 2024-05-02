@@ -2,20 +2,19 @@ package com.quocnguyen.studentmanagement.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "course_student")
 @Data
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class CourseStudent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
     Double grade;
 
@@ -23,11 +22,11 @@ public class CourseStudent {
     @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "course_id")
-    Course course;
+    private Course course;
 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "student_id")
-    Student student;
+    private Student student;
 }

@@ -1,14 +1,13 @@
 package com.quocnguyen.studentmanagement.rest_controllers;
 
 
-import com.quocnguyen.studentmanagement.entities.CollectionResponse;
-import com.quocnguyen.studentmanagement.entities.CourseDTO;
-import com.quocnguyen.studentmanagement.entities.DataResponse;
+import com.quocnguyen.studentmanagement.entities.*;
 import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.services.CourseService;
 import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.connector.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,10 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/courses")
 @RequiredArgsConstructor
+@Slf4j
 public class CourseRestController {
     private static final int NUMBER_COURSERS_PER_PAGE = 15;
     private final CourseService service;
@@ -74,6 +75,39 @@ public class CourseRestController {
         }
 
         return ResponseEntity.ok("Deleted course successfully");
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<DataResponse<CourseDTO>> getCourseById(@PathVariable("id") int courseId) {
+        CourseDTO course;
+        try {
+            course = service.getById(courseId);
+
+        } catch(ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(String.format("Course id \"%d\" not found", courseId));
+        }
+
+        return ResponseEntity.ok(new DataResponse<>(course));
+    }
+
+    @GetMapping("{id}/available-students")
+    public ResponseEntity<DataResponse<List<StudentDTO>>> getAvailableStudent(
+            @PathVariable("id") int courseId,
+            @RequestParam(defaultValue = "") String keyword
+    ) {
+        List<StudentDTO> students = service.getAvailableStudent(courseId, keyword);
+        log.debug(students.toString());
+
+        return ResponseEntity.ok(new DataResponse<>(students));
+    }
+
+    @PostMapping("{id}/add-student")
+    public ResponseEntity<DataResponse<CourseStudentDTO>> addStudentToCourse(
+            @RequestBody @Valid CourseStudentDTO courseStudent
+    ) {
+        CourseStudentDTO savedObj = service.addStudentToCourse(courseStudent);
+
+        return ResponseEntity.ok(new DataResponse<>(savedObj));
     }
 
 

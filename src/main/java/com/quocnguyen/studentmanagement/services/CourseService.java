@@ -1,10 +1,11 @@
 package com.quocnguyen.studentmanagement.services;
 
 
-import com.quocnguyen.studentmanagement.entities.Course;
-import com.quocnguyen.studentmanagement.entities.CourseDTO;
+import com.quocnguyen.studentmanagement.entities.*;
 import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.repositories.CourseRepository;
+import com.quocnguyen.studentmanagement.repositories.CourseStudentRepository;
+import com.quocnguyen.studentmanagement.repositories.StudentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,12 +14,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class CourseService {
     private final CourseRepository repository;
+    private final StudentRepository studentRepository;
+    private final CourseStudentRepository courseStudentRepository;
 
 
     public Page<CourseDTO> getCourses(Pageable pageable, String keyword) {
@@ -57,5 +61,41 @@ public class CourseService {
         Course course = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
         repository.delete(course);
+    }
+
+    public CourseDTO getById(int id) {
+        Course course = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        return new CourseDTO(course);
+    }
+
+    public List<StudentDTO> getAvailableStudent(int courseId, String keyword) {
+
+        if(keyword.matches("^[1-9][0-9]*$")) {
+            return  studentRepository.findStudentNotJoinedCourseById(courseId, Integer.parseInt(keyword))
+                    .stream().map(StudentDTO::new).toList();
+        }
+
+        return studentRepository
+                .findStudentNotJoinedCourseByName(courseId, keyword)
+                .stream()
+                .map(StudentDTO::new).toList();
+    }
+
+    @Transactional
+    public CourseStudentDTO addStudentToCourse(CourseStudentDTO courseStudent) {
+        final Student student = studentRepository.findById(courseStudent.getStudentId()).orElseThrow(ResourceNotFoundException::new);
+        final Course course = repository.findById(courseStudent.getCourseId()).orElseThrow(ResourceNotFoundException::new);
+
+        CourseStudent entity = CourseStudent
+                .builder()
+                .student(student)
+                .course(course)
+                .grade(courseStudent.getGrade())
+                .build();
+
+        courseStudentRepository.save(entity);
+
+        return new CourseStudentDTO(entity);
     }
 }
