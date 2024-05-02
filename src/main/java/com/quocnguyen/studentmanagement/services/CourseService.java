@@ -3,6 +3,7 @@ package com.quocnguyen.studentmanagement.services;
 
 import com.quocnguyen.studentmanagement.entities.Course;
 import com.quocnguyen.studentmanagement.entities.CourseDTO;
+import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.repositories.CourseRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +50,12 @@ public class CourseService {
         log.debug(newCourse.getStudents().toString());
 
         return new CourseDTO(newCourse);
+    }
+
+    @Transactional
+    public void delete(int id) {
+        Course course = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
+
+        repository.delete(course);
     }
 }

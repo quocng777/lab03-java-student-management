@@ -95,22 +95,22 @@
     var numOfPages = 0;
     var keyword = "";
 
-    const handleDeleteStudent = async (e) => {
+    const handleDeleteCourse = async (e) => {
         e.stopPropagation();
 
-        const id = e.currentTarget.dataset.studentid;
+        const id = e.currentTarget.dataset.courseid;
 
-        await fetch(`/api/students/${id}`, {
+        await fetch(`/api/courses/${id}`, {
             method: "DELETE",
         })
 
-        alert("Deleted student successfully");
-        document.querySelector(`tr[data-userid="${id}"]`).remove();
+        alert("Deleted course successfully");
+        document.querySelector(`tr[data-courseid="${id}"]`).remove();
     }
     const handleClickStudentRow = (e) => {
         console.log(e.currentTarget)
         const id = e.currentTarget.dataset.userid;
-        window.location.href="/students/" + id;
+        window.location.href="/courses/" + id;
     };
 
     const handleClickPageBtn = async (e) => {
@@ -145,7 +145,7 @@
                 <td class="w-4/12">${course.notes || ""}</td>
                 <td class="w-1/12">
                     <div class="flex w-full justify-center items-center">
-                        <button onclick="handleDeleteStudent(event)" data-courseid="${course.id}">
+                        <button onclick="handleDeleteCourse(event)" data-courseid="${course.id}">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>

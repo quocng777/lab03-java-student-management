@@ -4,10 +4,12 @@ package com.quocnguyen.studentmanagement.rest_controllers;
 import com.quocnguyen.studentmanagement.entities.CollectionResponse;
 import com.quocnguyen.studentmanagement.entities.CourseDTO;
 import com.quocnguyen.studentmanagement.entities.DataResponse;
+import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
 import com.quocnguyen.studentmanagement.services.CourseService;
 import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.connector.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,6 +63,17 @@ public class CourseRestController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(new DataResponse<>(savedCourse));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> deleteCourse(@PathVariable(name = "id", required = true) Integer id) {
+        try {
+            service.delete(id);
+        } catch(ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(String.format("Course id \"%s\" not found", id));
+        }
+
+        return ResponseEntity.ok("Deleted course successfully");
     }
 
 
