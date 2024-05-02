@@ -3,9 +3,7 @@ package com.quocnguyen.studentmanagement.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Table(name = "student")
 @Entity
@@ -32,7 +30,7 @@ public class Student {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, mappedBy = "student")
-    Set<CourseStudent> courses = new HashSet<>();
+    List<CourseStudent> courses = new ArrayList<>();
 
 
 }

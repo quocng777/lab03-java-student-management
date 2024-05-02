@@ -27,7 +27,7 @@ public class StudentService {
     public StudentDTO getStudentById(int id) {
 
         final Student student = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
-        log.debug(student.toString());
+        log.debug(student.getCourses().toString());
         return  new StudentDTO(student);
     }
 

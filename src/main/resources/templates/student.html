@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body class="max-w-[1024px]  mx-auto relative text-gray-700">
+<header class="sticky top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-6 bg-teal-600 text-white lg:px-12 rounded-b-md">
+    <a href="/">Student Management System</a>
+    <nav class="flex gap-6">
+        <a class="px-2 py-1 rounded-md hover:bg-gray-500/75 transition-colors" href="#">
+            Student
+        </a>
+        <a class="px-2 py-1 rounded-md hover:bg-gray-500/75 transition-colors" href="#">
+            Course
+        </a>
+    </nav>
+</header>
+<main class="width mt-6 px-4">
+    <h1 class="font-bold text-3xl">
+        Students
+    </h1>
+    <p class="text-sm font-medium text-gray-500">Student Details ID [[${studentId}]]</p>
+    <input type="hidden" th:value="${studentId}" id="studentId"/>
+
+    <form class="create-form w-fit flex flex-col mt-8">
+        <div class="flex items-center justify-between w-[340px]">
+            <label for="name">Name</label>
+            <input class="py-1 px-2 rounded-lg w-[220px] shadow-md" id="name" name="name"  required/>
+        </div>
+        <div class="flex items-center justify-between w-[340px] mt-4">
+            <label for="birthday">Birthday</label>
+            <input type="date" class="py-1 px-2 rounded-lg w-[220px] shadow-md" id="birthday" name="name"required/>
+        </div>
+        <div class="flex items-center justify-between w-[340px] mt-4">
+            <label for="address">Address</label>
+            <input class="py-1 px-2 rounded-lg w-[220px] shadow-md" id="address" name="name"  required/>
+        </div>
+        <div class="flex items-center justify-between w-[340px] mt-4">
+            <label for="notes">Note</label>
+            <textarea class="py-1 px-2 rounded-lg w-[220px] shadow-md" id="notes" name="name" placeholder="Enter notes" rows="3"></textarea>
+        </div>
+
+        <button class="bg-teal-600 text-white px-4 py-2 rounded-xl mt-6 mx-auto right-1/2">
+            Update
+        </button>
+    </form>
+
+    <div class="mt-10">
+        <p>Enrolled courses</p>
+        <table class="table-fixed max-w-[800px] min-w-[600px] mx-auto bg-slate-50 rounded-lg mt-4 overflow-hidden">
+            <thead>
+            <tr class="bg-gray-200">
+                <th scope="row" class="py-2 font-medium">ID</th>
+                <th scope="row" class="py-2 font-medium">Course</th>
+                <th scope="row" class="py-2 font-medium">Year</th>
+                <th scope="row" class="py-2 font-medium">Grade</th>
+                <th scope="row" class="py-2 font-medium">Actions</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+</body>
+
+<script>
+    let studentId;
+    const handleSubmitCreateForm = async (e) => {
+        e.preventDefault();
+        const name = document.querySelector("#name");
+        const birthday = document.querySelector("#birthday");
+        const address = document.querySelector("#address");
+        const notes = document.querySelector("#notes");
+
+        const body = JSON.stringify({
+            id: studentId,
+            name: name.value,
+            birthday: birthday.value,
+            address: address.value,
+            notes: notes.value,
+        });
+
+        const response = await fetch(`/api/students/${studentId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body,
+        });
+
+        const data = await response.json();
+
+        alert(`Updated student successfully with id ${data.data?.id}`);
+    }
+</script>
+<script>
+
+
+    document.addEventListener('DOMContentLoaded', async (e) => {
+        studentId = document.querySelector("#studentId").value;
+
+
+        const res = await fetch(`/api/students/${studentId}`);
+        const data = await res.json();
+
+        const student = data?.data;
+
+        document.querySelector("#name").value = student.name;
+        document.querySelector("#birthday").value = new Date(student.birthday).toISOString().split('T')[0];
+        document.querySelector("#address").value = student.address;
+        document.querySelector("#notes").value = student.notes;
+
+        document.querySelector(".create-form").addEventListener("submit", handleSubmitCreateForm)
+
+        const table = document.querySelector("tbody");
+        table.innerHTML = student.courses.map((course) =>
+            `<tr
+                class="even:bg-gray-100 hover:bg-teal-200/75 hover:cursor-pointer transition-colors duration-300"
+                data-courseid="${course.id}"
+             >
+                <td class="w-2/12 text-center">${course.id}</td>
+                <td class="w-4/12 text-center">${course.name}</td>
+                <td class="w-2/12 text-center">${course.year}</td>
+                <td class="w-3/12 text-center">${course.grade.toFixed(2)}</td>
+                <td class="w-1/12">
+                    <div class="flex w-full justify-center items-center">
+                        <button  data-courseid="${course.id}">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`
+        ).join("\n");
+
+    });
+
+</script>
+</html>

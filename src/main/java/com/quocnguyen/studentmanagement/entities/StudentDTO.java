@@ -10,6 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +30,7 @@ public class StudentDTO {
     private String address;
 
     private String notes;
+    private List<StudentCourseDTO> courses;
 
     public StudentDTO(Student student)  {
         this.id = student.getId();
@@ -35,5 +38,6 @@ public class StudentDTO {
         this.birthday = student.getBirthday();
         this.address = student.getAddress();
         this.notes = student.getNotes();
+        this.courses = student.getCourses().stream().map(StudentCourseDTO::new).toList();
     }
 }
