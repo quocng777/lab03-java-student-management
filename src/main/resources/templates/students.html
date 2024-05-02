@@ -43,6 +43,7 @@
                 <th scope="row" class="py-2 font-medium">Birthday</th>
                 <th scope="row" class="py-2 font-medium">Address</th>
                 <th scope="row" class="py-2 font-medium">Note</th>
+                <th scope="row" class="py-2 font-medium">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -64,22 +65,22 @@
             <i class="fa-solid fa-xmark"></i>
         </button>
 
-        <form>
+        <form class="create-form">
             <div class="flex items-center justify-between w-[320px]">
                 <label>Name</label>
                 <input class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter name" required/>
             </div>
             <div class="flex items-center justify-between w-[320px] mt-4">
                 <label>Birthday</label>
-                <input type="date" class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter name" required/>
+                <input type="date" class="py-1 px-2 rounded-lg w-[220px]" id="birthday" name="name"required/>
             </div>
             <div class="flex items-center justify-between w-[320px] mt-4">
                 <label>Address</label>
-                <input class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter name" required/>
+                <input class="py-1 px-2 rounded-lg w-[220px]" id="address" name="name" placeholder="Enter name" required/>
             </div>
             <div class="flex items-center justify-between w-[320px] mt-4">
                 <label>Note</label>
-                <textarea class="py-1 px-2 rounded-lg w-[220px]" id="name" name="name" placeholder="Enter notes" rows="3"></textarea>
+                <textarea class="py-1 px-2 rounded-lg w-[220px]" id="notes" name="name" placeholder="Enter notes" rows="3"></textarea>
             </div>
 
             <button class="bg-teal-600 text-white px-4 py-2 rounded-xl mt-6 mx-auto w-full">
@@ -128,14 +129,21 @@
                 <td class="w-1/12 text-center">${student.id}</td>
                 <td class="w-3/12 text-center">${student.name}</td>
                 <td class="w-2/12 text-center">${new Date(student.birthday).toLocaleDateString("vi-VN")}</td>
-                <td class="w-3/12 text-center">${student.address}</td>
+                <td class="w-2/12 text-center">${student.address}</td>
                 <td class="w-4/12">${student.notes || ""}</td>
+                <td class="w-1/12">
+                    <div class="flex w-full justify-center items-center">
+                        <button>
+
+                        </button>
+                    </div>
+                </td>
             </tr>`
         ).join("\n");
 
         if(page && page.totalPages > 1) {
             const pageBtn = [];
-            for(let i = 1; i < page.totalPages; i++) {
+            for(let i = 1; i <= page.totalPages; i++) {
                 pageBtn.push(
                     `
                          <button class="page-btn size-8 bg-slate-100 rounded-full text-center align-middle border border-gray-400 ${page.page === i ? "bg-teal-200/75 border-teal-600" : ""} hover:scale-105 transition-transform"
@@ -160,6 +168,38 @@
             document.querySelector(".pagination").innerHTML = "";
         }
     }
+
+    const handleSubmitCreateForm = async (e) => {
+        e.preventDefault();
+        const name = document.querySelector("#name");
+        const birthday = document.querySelector("#birthday");
+        const address = document.querySelector("#address");
+        const notes = document.querySelector("#notes");
+
+        const body = JSON.stringify({
+            name: name.value,
+            birthday: birthday.value,
+            address: address.value,
+            notes: notes.value,
+        });
+
+        const response = await fetch("/api/students", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body,
+        });
+
+        const data = await response.json();
+
+        alert(`Create student successfully with id ${data.data?.id}`);
+        name.value = "";
+        birthday.value = "";
+        address.value = "";
+        notes.value = "";
+        document.querySelector(".create-student").classList.add("hidden");
+    }
 </script>
 
 <script>
@@ -180,6 +220,10 @@
         document.querySelector(".add-student").addEventListener("click", (e) => {
             document.querySelector(".create-student").classList.remove("hidden")
         })
+
+        document.querySelector(".create-form").addEventListener("submit", handleSubmitCreateForm)
+
+
     });
 </script>
 </html>
