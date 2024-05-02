@@ -90,6 +90,25 @@ public class CourseRestController {
         return ResponseEntity.ok(new DataResponse<>(course));
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<DataResponse<CourseDTO>> updateStudent(
+            @PathVariable(name = "id") String id ,
+            @RequestBody @Valid CourseDTO course) {
+
+        int courseId;
+        try {
+            courseId = Integer.parseInt(id);
+
+            //call to service to perform transaction
+            course = service.update(courseId, course);
+
+        } catch (NumberFormatException | ResourceNotFoundException e) {
+            throw new ResourceNotFoundException(String.format("Student with id \"%s\" not found", course.getId()));
+        }
+
+        return ResponseEntity.ok(new DataResponse<>(course));
+    }
+
     @GetMapping("{id}/available-students")
     public ResponseEntity<DataResponse<List<StudentDTO>>> getAvailableStudent(
             @PathVariable("id") int courseId,

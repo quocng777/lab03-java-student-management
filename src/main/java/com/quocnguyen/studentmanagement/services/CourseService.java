@@ -98,4 +98,21 @@ public class CourseService {
 
         return new CourseStudentDTO(entity);
     }
+
+    @Transactional
+    public CourseDTO update(int id, CourseDTO course) {
+
+        Course storedCourse = repository
+                .findById(id)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        storedCourse.setName(course.getName());
+        storedCourse.setLecture(course.getLecture());
+        storedCourse.setNotes(course.getNotes());
+        storedCourse.setYear(course.getYear());
+
+        repository.save(storedCourse);
+
+        return new CourseDTO(storedCourse);
+    }
 }

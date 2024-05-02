@@ -14,7 +14,7 @@
 <header class="sticky top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-6 bg-teal-600 text-white lg:px-12 rounded-b-md">
   <a href="/">Student Management System</a>
   <nav class="flex gap-6">
-    <a class="px-2 py-1 rounded-md hover:bg-gray-500/75 transition-colors" href="/students">
+    <a class="px-2 py-1 rounded-md hover:bg-gray-500/75 transition-colors" href="/">
       Student
     </a>
     <a class="px-2 py-1 rounded-md hover:bg-gray-500/75 transition-colors" href="/courses">
@@ -114,19 +114,19 @@
   const handleSubmitCreateForm = async (e) => {
     e.preventDefault();
     const name = document.querySelector("#name");
-    const birthday = document.querySelector("#birthday");
-    const address = document.querySelector("#address");
+    const lecture = document.querySelector("#lecture");
+    const year = document.querySelector("#year");
     const notes = document.querySelector("#notes");
 
     const body = JSON.stringify({
-      id: studentId,
+      id: courseId,
       name: name.value,
-      birthday: birthday.value,
-      address: address.value,
+      lecture: lecture.value,
+      year: year.value,
       notes: notes.value,
     });
 
-    const response = await fetch(`/api/students/${studentId}`, {
+    const response = await fetch(`/api/courses/${courseId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -136,7 +136,7 @@
 
     const data = await response.json();
 
-    alert(`Updated student successfully with id ${data.data?.id}`);
+    alert(`Updated course successfully with id ${data.data?.id}`);
   }
 
   const handleAddStudent = (e) => {
