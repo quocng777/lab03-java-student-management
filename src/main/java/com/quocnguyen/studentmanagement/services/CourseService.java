@@ -115,4 +115,15 @@ public class CourseService {
 
         return new CourseDTO(storedCourse);
     }
+
+    @Transactional
+    public void deleteStudentFromCourse(int courseId, int studentId) {
+        CourseStudent enrollment = courseStudentRepository.findFirstByCourse_IdAndStudent_Id(courseId, studentId);
+
+        if(enrollment == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        courseStudentRepository.delete(enrollment);
+    }
 }

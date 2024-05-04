@@ -129,5 +129,15 @@ public class CourseRestController {
         return ResponseEntity.ok(new DataResponse<>(savedObj));
     }
 
+    @DeleteMapping("{courseId}/students/{studentId}")
+    public ResponseEntity<String> deleteStudentFromCourse(
+            @PathVariable("courseId") int courseId,
+            @PathVariable("studentId") int studentId
+    ) {
+        service.deleteStudentFromCourse(courseId, studentId);
+
+        return ResponseEntity.ok("Deleted student from course successfully");
+    }
+
 
 }

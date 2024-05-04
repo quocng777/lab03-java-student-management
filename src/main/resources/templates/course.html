@@ -139,6 +139,20 @@
     alert(`Updated course successfully with id ${data.data?.id}`);
   }
 
+  const handleRemoveStudent = async (e) => {
+    e.stopPropagation();
+
+    const studentId = e.currentTarget.dataset.studentid;
+
+    await fetch(`/api/courses/${courseId}/students/${studentId}`, {
+      method: "DELETE",
+    })
+
+    document.querySelector(`tr[data-studentid="${studentId}"]`).remove();
+
+    alert("Deleted student from this course successfully")
+  }
+
   const handleAddStudent = (e) => {
     selectedStudent = e.currentTarget.dataset.studentid;
 
@@ -217,7 +231,7 @@
                 <td class="w-3/12 text-center">${student.grade.toFixed(2)}</td>
                 <td class="w-1/12">
                     <div class="flex w-full justify-center items-center">
-                        <button  data-studentid="${student.id}">
+                        <button  data-studentid="${student.id}" onclick="handleRemoveStudent(event)">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>

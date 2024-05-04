@@ -35,6 +35,21 @@
 
     <div class="mt-10">
         <p class="num-students"></p>
+        <div class="hidden mt-4 sort-by">
+            Sort by
+            <select class="sort-select p-2 rounded-md w-[120px] ml-6 mb-4">
+                <option value="id-asc" class="flex w-full justify-between" selected>
+                    ID asc
+                </option>
+                <option value="name-asc" class="flex w-full justify-between">
+                    Name asc
+                </option>
+                <option value="name-desc" class="flex w-full justify-between">
+                    Name desc
+                </option>
+
+            </select>
+        </div>
         <table class="table-fixed max-w-[800px] mx-auto bg-slate-50 rounded-lg mt-4 overflow-hidden mb-6 min-w-[600px]">
             <thead>
             <tr class="bg-gray-200">
@@ -94,6 +109,8 @@
     var selected = 0;
     var numOfPages = 0;
     var keyword = "";
+    let sortBy = "id";
+    let sortDir = "asc"
 
     const handleDeleteStudent = async (e) => {
         e.stopPropagation();
@@ -120,8 +137,8 @@
     }
 
 
-    const loadData = async (pageNum, keyword) => {
-        const res = await fetch(`${host}/api/students?page=${pageNum}&keyword=${keyword}`);
+    const loadData = async (pageNum, keyword, sortBy="id", sortDir="asc") => {
+        const res = await fetch(`${host}/api/students?page=${pageNum}&keyword=${keyword}&sortBy=${sortBy}&sortDir=${sortDir}`);
         const data = (await res.json());
         console.log(data)
         const students = data.data;
@@ -131,6 +148,14 @@
 
         document.querySelector(".num-students").innerHTML = students && students.length > 0 ? `This table is showing ${page.number} / ${page.totalElements} students`
             : "No student founded in database";
+
+        if(page.totalElements >= 2) {
+            document.querySelector(".sort-by").classList.remove("hidden");
+        } else {
+            document.querySelector(".sort-by").classList.add("hidden");
+        }
+
+        numOfPages = page.page;
 
         const table = document.querySelector("tbody");
         table.innerHTML = students.map((student) =>
@@ -236,7 +261,13 @@
 
         document.querySelector(".create-form").addEventListener("submit", handleSubmitCreateForm)
 
+        document.querySelector(".sort-select").addEventListener("change", (e) => {
+            const val = e.currentTarget.value;
 
+            [sortBy, sortDir] = val.split("-");
+
+            loadData(numOfPages, keyword, sortBy, sortDir);
+        })
     });
 </script>
 </html>
