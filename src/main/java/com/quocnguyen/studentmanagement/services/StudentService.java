@@ -1,8 +1,10 @@
 package com.quocnguyen.studentmanagement.services;
 
+import com.quocnguyen.studentmanagement.entities.CourseStudent;
 import com.quocnguyen.studentmanagement.entities.Student;
 import com.quocnguyen.studentmanagement.entities.StudentDTO;
 import com.quocnguyen.studentmanagement.exceptions.ResourceNotFoundException;
+import com.quocnguyen.studentmanagement.repositories.CourseStudentRepository;
 import com.quocnguyen.studentmanagement.repositories.StudentRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class StudentService {
     private final StudentRepository repository;
+    private final CourseStudentRepository courseStudentRepository;
 
     public Page<StudentDTO> getStudents(Pageable pageable, String keyword) {
 
@@ -76,6 +79,17 @@ public class StudentService {
         Student storedStudent = repository.findById(id).orElseThrow(ResourceNotFoundException::new);
 
         repository.delete(storedStudent);
+    }
+
+    @Transactional
+    public void deleteStudentFromCourse(int courseId, int studentId) {
+        CourseStudent courseStudent = courseStudentRepository.findFirstByCourse_IdAndStudent_Id(courseId, studentId);
+
+        if(courseStudent == null) {
+            throw new ResourceNotFoundException();
+        }
+
+        courseStudentRepository.delete(courseStudent);
     }
 
 }

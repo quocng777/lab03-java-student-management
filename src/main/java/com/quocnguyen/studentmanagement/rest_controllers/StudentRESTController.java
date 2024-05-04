@@ -130,6 +130,17 @@ public class StudentRESTController {
 
         return ResponseEntity.ok("Deleted successfully");
     }
+
+
+    @DeleteMapping("{studentId}/courses/{courseId}")
+    public ResponseEntity<String> deleteStudentCourse(
+            @PathVariable("studentId") int studentId,
+            @PathVariable("courseId") int courseId
+    ) {
+        service.deleteStudentFromCourse(courseId, studentId);
+
+        return ResponseEntity.ok("Deleted student from course successfully");
+    }
 }
 
 

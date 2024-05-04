@@ -106,6 +106,32 @@
   </div>
 </div>
 
+<div class="add-student hidden">
+  <div class="bg-black/40 fixed top-0 right-0 left-0 bottom-0"></div>
+  <div class="bg-slate-50 w-fit rounded-xl fixed bottom-[50%] right-[50%] translate-x-1/2 translate-y-1/2 px-6 py-4">
+    <h3 class="text-lg font-medium mb-8">Confirm</h3>
+
+    <button class="close-create-form absolute right-4 top-4">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <p>
+      Do you really want to add this student to this course?
+    </p>
+
+    <form class="add-student-form">
+      <div class="flex items-center justify-between w-[340px] mt-4">
+        <label for="grade">Grade (Optional)</label>
+        <input type="number" step="0.05" class="shadow-md py-1 px-2 rounded-lg w-[200px]" id="grade" name="grade"/>
+      </div>
+
+      <button class="add-btn bg-teal-600 text-white px-4 py-2 rounded-xl mt-6 mx-auto w-full">
+        Add
+      </button>
+    </form>
+  </div>
+</div>
+
 </body>
 
 <script>
@@ -207,6 +233,26 @@
     document.querySelector("#grade").value = "";
 
   }
+
+  const handleUpdateStudent = async (event) => {
+    const studentId = event.currentTarget.dataset.studentid;
+
+    const newGrade = document.querySelector(`input[data-studentid="${studentId}"]`).value;
+
+    await fetch(`/api/courses/${courseId}/students/${studentId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        studentId,
+        courseId,
+        grade: newGrade
+      })
+    })
+
+    alert("Updated student's grade successfully");
+  }
   async function loadCourseData() {
     const res = await fetch(`/api/courses/${courseId}`);
     const data = await res.json();
@@ -228,11 +274,15 @@
              >
                 <td class="w-2/12 text-center">${student.id}</td>
                 <td class="w-4/12 text-center">${student.name}</td>
-                <td class="w-3/12 text-center">${student.grade.toFixed(2)}</td>
+                <td class="w-3/12 text-center"><input class="w-[80px] bg-transparent p-1 rounded-md shadow-md" data-studentid="${student.id}" value="${student.grade.toFixed(2)}" /></td>
                 <td class="w-1/12">
                     <div class="flex w-full justify-center items-center">
                         <button  data-studentid="${student.id}" onclick="handleRemoveStudent(event)">
                             <i class="fa-solid fa-trash"></i>
+                        </button>
+
+                        <button class="ml-4" data-studentid="${student.id}" onclick="handleUpdateStudent(event)" data-studentid="${student.id}">
+                            <i class="fa-solid fa-rotate-right"></i>
                         </button>
                     </div>
                 </td>

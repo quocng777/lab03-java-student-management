@@ -126,4 +126,21 @@ public class CourseService {
 
         courseStudentRepository.delete(enrollment);
     }
+
+    @Transactional
+    public CourseStudentDTO updateStudentInCourse(CourseStudentDTO courseStudent) {
+        CourseStudent enrollment = courseStudentRepository.findFirstByCourse_IdAndStudent_Id(
+                courseStudent.getCourseId(),
+                courseStudent.getStudentId());
+
+        if(enrollment == null) {
+            throw new ResourceNotFoundException();
+        };
+
+        enrollment.setGrade(courseStudent.getGrade());
+
+        courseStudentRepository.save(enrollment);
+
+        return new CourseStudentDTO(enrollment);
+    }
 }

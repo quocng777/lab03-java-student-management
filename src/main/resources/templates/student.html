@@ -71,6 +71,20 @@
 
 <script>
     let studentId;
+
+    const handleRemoveCourse = async (e) => {
+        e.stopPropagation();
+
+        const courseId = e.currentTarget.dataset.courseid;
+
+        await fetch(`/api/students/${studentId}/courses/${courseId}`, {
+            method: "DELETE",
+        })
+
+        document.querySelector(`tr[data-courseid="${courseId}"]`).remove();
+
+        alert("Deleted student from that course successfully")
+    }
     const handleSubmitCreateForm = async (e) => {
         e.preventDefault();
         const name = document.querySelector("#name");
@@ -130,7 +144,7 @@
                 <td class="w-3/12 text-center">${course.grade.toFixed(2)}</td>
                 <td class="w-1/12">
                     <div class="flex w-full justify-center items-center">
-                        <button  data-courseid="${course.id}">
+                        <button  data-courseid="${course.id}" onclick="handleRemoveCourse(event)">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>

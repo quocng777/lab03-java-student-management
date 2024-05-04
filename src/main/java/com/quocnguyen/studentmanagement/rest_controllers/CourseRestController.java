@@ -139,5 +139,14 @@ public class CourseRestController {
         return ResponseEntity.ok("Deleted student from course successfully");
     }
 
+    @PutMapping("{courseId}/students/{studentId}")
+    public ResponseEntity<DataResponse<CourseStudentDTO>> updateStudentInCourse(
+            @PathVariable("courseId") int courseId,
+            @PathVariable("studentId") int studentId,
+            @RequestBody CourseStudentDTO courseStudent
+    ) {
+        CourseStudentDTO storedVal = service.updateStudentInCourse(courseStudent);
 
+        return ResponseEntity.ok(new DataResponse<>(storedVal));
+    }
 }
